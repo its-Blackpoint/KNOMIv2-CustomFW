@@ -7,8 +7,8 @@ quality-of-life changes on top of the stock firmware.
 
 Current version: **BPv1.0.4**
 
-> **KNOMI V2 only.** The changes were built and tested for the `knomiv2`
-> environment. The `knomiv1` environment was not built or tested.
+> **KNOMI V2 only.** KNOMI V1 support (build environment, board definition,
+> pinout) was removed from this firmware.
 
 ## Features / changes compared to stock BTT firmware
 

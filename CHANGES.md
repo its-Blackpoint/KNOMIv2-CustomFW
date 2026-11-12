@@ -108,7 +108,15 @@ Base: [bigtreetech/KNOMI](https://github.com/bigtreetech/KNOMI) branch `firmware
 * File names are percent-encoded (folders, spaces, umlauts, `+`).
 * Note: KlipperScreen shows a time-based progress and will still differ.
 
-## 9. Version
+## 9. KNOMI V1 support removed
+
+**Files:** `platformio.ini`, `src/pinout.h`, `src/pinout_knomi_v1.h` (deleted),
+`buildroot/boards/esp32r8.json` (deleted)
+
+* Build environment `knomiv1`, its board definition and pinout removed;
+  `pinout.h` includes the V2 pinout only.
+
+## 10. Version
 
 **File:** `src/config.h`
 

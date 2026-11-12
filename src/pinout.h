@@ -1,10 +1,7 @@
 #ifndef PINOUT_H
 #define PINOUT_H
 
-#ifdef KNOMIV2
+// KNOMI V2 only (KNOMI V1 support removed)
 #include "pinout_knomi_v2.h"
-#else
-#include "pinout_knomi_v1.h"
-#endif
 
 #endif
