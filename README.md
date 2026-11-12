@@ -5,6 +5,8 @@ This fork contains a **custom firmware for the BIGTREETECH KNOMI V2** (version *
 printing screen, theme-colored values, no negative target temperatures and print progress
 calculated like Mainsail.
 
+<img src="https://raw.githubusercontent.com/its-Blackpoint/KNOMIv2-CustomFW/firmware/docs/images/printing_stock_vs_custom.png" width="420" alt="Printing screen stock vs custom" /> <img src="https://raw.githubusercontent.com/its-Blackpoint/KNOMIv2-CustomFW/firmware/docs/images/printing_screen.gif" width="200" alt="Printing screen animation" />
+
 * Source code and documentation: branch [`firmware`](https://github.com/its-Blackpoint/KNOMIv2-CustomFW/tree/firmware)
   ([README](https://github.com/its-Blackpoint/KNOMIv2-CustomFW/blob/firmware/README.md),
   [all changes](https://github.com/its-Blackpoint/KNOMIv2-CustomFW/blob/firmware/CHANGES.md))
