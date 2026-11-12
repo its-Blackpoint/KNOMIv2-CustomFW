@@ -3,6 +3,7 @@
 #include <ESPmDNS.h>
 
 #include "knomi.h"
+#include "display_rotation.h"
 
 static AsyncWebServer server(SERVER_PORT);
 
@@ -65,6 +66,8 @@ String knomi_html_processor(const String& var){
     } else if (var == "hostname") {
         String hostname = knomi_config.hostname;
         value = hostname.isEmpty() ? "" : "value=" + hostname;
+    } else if (var == "flip_state") {
+        value = display_rotation_requested() ? "180&deg;" : "0&deg;";
     } else  if (var == knomi_config.mode) {
         value = "selected";
     }
@@ -172,6 +175,30 @@ void webserver_setup(void) {
     server.on("/favicon.ico", HTTP_GET, [](AsyncWebServerRequest *request){
         AsyncWebServerResponse *response = request->beginResponse_P(200, "image/x-icon", btt_logo_only_ico, sizeof(btt_logo_only_ico));
         request->send(response);
+    });
+
+    // UI rotation
+    // GET /display               -> current state
+    // GET /display?flip=1|0      -> set 180° / normal
+    // GET /display?flip=toggle   -> toggle
+    server.on("/display", HTTP_GET, [](AsyncWebServerRequest *request){
+        if (request->hasParam("flip")) {
+            String v = request->getParam("flip")->value();
+            if (v == "toggle") {
+                display_rotation_request(!display_rotation_requested());
+            } else if (v == "1" || v == "true" || v == "180") {
+                display_rotation_request(true);
+            } else if (v == "0" || v == "false") {
+                display_rotation_request(false);
+            } else {
+                request->send(400, "application/json", "{\"error\":\"flip must be 0, 1 or toggle\"}");
+                return;
+            }
+        }
+        String json = "{\"flipped\":";
+        json += display_rotation_requested() ? "true" : "false";
+        json += "}";
+        request->send(200, "application/json", json);
     });
 
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){

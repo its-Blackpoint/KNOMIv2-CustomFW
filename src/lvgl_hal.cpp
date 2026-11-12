@@ -1,5 +1,6 @@
 #include "lvgl_hal.h"
 #include "pinout.h"
+#include "display_rotation.h"
 
 TFT_eSPI tft_gc9a01 = TFT_eSPI();
 #ifdef CST816S_SUPPORT
@@ -31,8 +32,14 @@ void usr_touchpad_read(struct _lv_indev_drv_t * indev_drv, lv_indev_data_t * dat
     if(event.finger) {
         data->state = LV_INDEV_STATE_PR;
         /*Set the coordinates*/
-        data->point.x = event.x;
-        data->point.y = event.y;
+        // Mirror touch when UI is rotated 180°
+        if (display_rotation_is_flipped()) {
+            data->point.x = (TFT_WIDTH  - 1) - event.x;
+            data->point.y = (TFT_HEIGHT - 1) - event.y;
+        } else {
+            data->point.x = event.x;
+            data->point.y = event.y;
+        }
         touch_idle_time_clear();
     } else {
         data->state = LV_INDEV_STATE_REL;
@@ -113,7 +120,9 @@ void lvgl_hal_init(void) {
     // display
     tft_gc9a01.begin();
     tft_gc9a01.invertDisplay(1);
-    // tft_gc9a01.setRotation(2);
+    // Apply stored UI rotation (0 = normal, 2 = 180°)
+    display_rotation_init();
+    tft_gc9a01.setRotation(display_rotation_is_flipped() ? 2 : 0);
 
     tft_gc9a01.fillScreen(TFT_BLACK);
     tft_backlight_init();

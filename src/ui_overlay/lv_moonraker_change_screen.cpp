@@ -21,7 +21,7 @@ typedef enum {
 } lv_screen_state_t;
 
 lv_obj_t * ui_img_main_gif;
-const lv_img_dsc_t * gif_idle[] = {&gif_voron, &gif_standby};
+const lv_img_dsc_t * gif_idle[] = {&gif_voron}; // standby GIF removed, only Voron logo
 
 static char string_buffer[8];
 static lv_screen_state_t lv_screen_state = LV_MOONRAKER_STATE_IDLE;
@@ -33,7 +33,7 @@ static void lv_goto_busy_screen(lv_obj_t * screen, lv_screen_state_t state, cons
     lv_screen_state = state;
 
     //
-    if (gif) lv_gif_set_src(ui_img_main_gif, gif);
+    if (gif) gif_theme_set_src(ui_img_main_gif, gif);
     lv_obj_clear_flag(ui_ScreenMainGif, LV_OBJ_FLAG_CLICKABLE);
 
     // backup now screen, cause lv_scr_act() is delayed updates
@@ -51,7 +51,7 @@ static void lv_goto_idle_screen(void) {
     lv_screen_state = LV_MOONRAKER_STATE_IDLE;
 
     //
-    lv_gif_set_src(ui_img_main_gif, gif_idle[0]);
+    gif_theme_set_src(ui_img_main_gif, gif_idle[0]);
     lv_obj_add_flag(ui_ScreenMainGif, LV_OBJ_FLAG_CLICKABLE);
 
     // goto the screen backed up before
@@ -184,12 +184,13 @@ void lv_loop_moonraker_change_screen(void) {
     // back to previous screen
     lv_goto_idle_screen();
 
-    if (lv_scr_act() == ui_ScreenMainGif) {
+    // cycle idle GIFs only if there is more than one (avoids restarting the Voron logo)
+    if ((ACOUNT(gif_idle) > 1) && (lv_scr_act() == ui_ScreenMainGif)) {
         static uint8_t gif_idle_index = 0;
         static uint32_t gif_idle_ms = 0;
 
         if (gif_idle_ms < millis()) {
-            lv_gif_set_src(ui_img_main_gif, gif_idle[gif_idle_index]);
+            gif_theme_set_src(ui_img_main_gif, gif_idle[gif_idle_index]);
             gif_idle_index = (gif_idle_index + 1) % ACOUNT(gif_idle);
             gif_idle_ms = millis() + 7000; // 7s
         }

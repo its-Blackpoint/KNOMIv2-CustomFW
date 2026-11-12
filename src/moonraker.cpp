@@ -152,13 +152,84 @@ const char * path_only_gcode(const char * path)
     return path;
 }
 
+// percent-encode a file path for a URL query (keeps '/')
+static String url_encode_path(const String &s) {
+    const char * hex = "0123456789ABCDEF";
+    String out;
+    out.reserve(s.length() * 3);
+    for (size_t i = 0; i < s.length(); i++) {
+        uint8_t c = (uint8_t)s[i];
+        if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ||
+            c == '-' || c == '_' || c == '.' || c == '~' || c == '/') {
+            out += (char)c;
+        } else {
+            out += '%';
+            out += hex[c >> 4];
+            out += hex[c & 0x0F];
+        }
+    }
+    return out;
+}
+
+// GET /server/files/metadata?filename=<path relative to gcodes root>
+// returns gcode_start_byte / gcode_end_byte (Moonraker file manager API)
+bool MOONRAKER::get_gcode_metadata(const String &filename) {
+    String response = send_request("GET", "/server/files/metadata?filename=" + url_encode_path(filename));
+    if (response.isEmpty()) return false;
+
+    StaticJsonDocument<96> filter;
+    filter["result"]["gcode_start_byte"] = true;
+    filter["result"]["gcode_end_byte"] = true;
+    StaticJsonDocument<256> json_parse;
+    if (deserializeJson(json_parse, response, DeserializationOption::Filter(filter))) return false;
+
+    JsonVariant start = json_parse["result"]["gcode_start_byte"];
+    JsonVariant end = json_parse["result"]["gcode_end_byte"];
+    if (!start.is<uint32_t>() || !end.is<uint32_t>()) return false;
+
+    gcode_start_byte = start.as<uint32_t>();
+    gcode_end_byte = end.as<uint32_t>();
+    return gcode_end_byte > gcode_start_byte;
+}
+
 void MOONRAKER::get_progress(void) {
-    String display_status = send_request("GET", "/printer/objects/query?virtual_sdcard");
+    String display_status = send_request("GET", "/printer/objects/query?virtual_sdcard&print_stats=filename");
     if (!display_status.isEmpty()) {
         DynamicJsonDocument json_parse(display_status.length() * 2);
         deserializeJson(json_parse, display_status);
-        data.progress = (uint8_t)(json_parse["result"]["status"]["virtual_sdcard"]["progress"].as<double>() * 100 + 0.5f);
-        String path = json_parse["result"]["status"]["virtual_sdcard"]["file_path"].as<String>();
+        JsonVariant vsd = json_parse["result"]["status"]["virtual_sdcard"];
+        double progress = vsd["progress"].as<double>(); // fallback: absolute file position / file size
+        uint32_t file_position = vsd["file_position"].as<uint32_t>();
+        String filename = json_parse["result"]["status"]["print_stats"]["filename"].as<String>();
+
+        // new file: fetch gcode byte range once (retry every 10s if it failed)
+        if (filename != meta_filename) {
+            meta_filename = filename;
+            meta_valid = false;
+            meta_retry_ms = 0;
+        }
+        if (!meta_valid && !meta_filename.isEmpty() && (int32_t)(millis() - meta_retry_ms) >= 0) {
+            meta_valid = get_gcode_metadata(meta_filename);
+            meta_retry_ms = millis() + 10000;
+        }
+
+        // same calculation as Mainsail "file-relative"
+        if (meta_valid) {
+            if (file_position <= gcode_start_byte) {
+                progress = 0.0;
+            } else if (file_position >= gcode_end_byte) {
+                progress = 1.0;
+            } else {
+                progress = (double)(file_position - gcode_start_byte) / (double)(gcode_end_byte - gcode_start_byte);
+            }
+        }
+        // round down like Mainsail (Math.floor)
+        int32_t percent = (int32_t)(progress * 100.0);
+        if (percent < 0) percent = 0;
+        if (percent > 100) percent = 100;
+        data.progress = (uint8_t)percent;
+
+        String path = vsd["file_path"].as<String>();
         strlcpy(data.file_path, path_only_gcode(path.c_str()), sizeof(data.file_path) - 1);
         data.file_path[sizeof(data.file_path) - 1] = 0;
 #ifdef MOONRAKER_DEBUG

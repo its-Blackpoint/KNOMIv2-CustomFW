@@ -145,8 +145,12 @@ void lv_loop_set_temp_screen(void) {
             frontend_target += TARGET_INC;
             lv_img_set_angle(ui_img_set_temp_dial, angle += DIAL_ANGLE_INC);
         } else if (event == KNOB_DEC) {
-            frontend_target -= TARGET_INC;
-            lv_img_set_angle(ui_img_set_temp_dial, angle -= DIAL_ANGLE_INC);
+            // do not go below 0°C
+            if (frontend_target > 0) {
+                frontend_target -= TARGET_INC;
+                if (frontend_target < 0) frontend_target = 0;
+                lv_img_set_angle(ui_img_set_temp_dial, angle -= DIAL_ANGLE_INC);
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 #define _LV_OVERLAY_H
 
 #include "lvgl.h"
+#include "gif_theme.h"
 
 extern lv_obj_t * ui_img_main_gif;
 extern const lv_img_dsc_t * gif_idle[];
@@ -16,6 +17,10 @@ LV_IMG_DECLARE(gif_heated);
 LV_IMG_DECLARE(gif_print);
 LV_IMG_DECLARE(gif_print_ok);
 LV_IMG_DECLARE(gif_printed);
+LV_IMG_DECLARE(gif_voron_small);
+
+// small animated Voron logo on ScreenPrinting (replaces accelerometer bars)
+extern lv_obj_t * ui_img_printing_voron;
 
 // lv_button_style.cpp
 void lv_btn_add_style(void);

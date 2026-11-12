@@ -6,6 +6,9 @@
 #include "ui/ui.h"
 #include "moonraker.h"
 #include "ui_overlay/lv_overlay.h"
+#include "display_rotation.h"
+
+lv_obj_t * ui_img_printing_voron = NULL;
 
 
 /****************** lvgl ui call function ******************/
@@ -60,7 +63,22 @@ void lvgl_ui_task(void * parameter) {
     lv_obj_del(ui_label_printing_acc_x);
     lv_obj_del(ui_label_printing_acc_y);
     lv_obj_del(ui_label_printing_acc_z);
+#else
+    // accelerometer bars not used on ScreenPrinting (sensor itself stays active)
+    lv_obj_add_flag(ui_slider_printing_acc_x, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_slider_printing_acc_y, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_slider_printing_acc_z, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_label_printing_acc_x, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_label_printing_acc_y, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_label_printing_acc_z, LV_OBJ_FLAG_HIDDEN);
 #endif
+
+    // small animated Voron logo where the accelerometer bars were (colored by theme)
+    ui_img_printing_voron = lv_gif_create(ui_ScreenPrinting);
+    gif_theme_set_src(ui_img_printing_voron, &gif_voron_small);
+    lv_obj_set_align(ui_img_printing_voron, LV_ALIGN_TOP_MID);
+    lv_obj_set_pos(ui_img_printing_voron, -1, 107);
+    lv_obj_clear_flag(ui_img_printing_voron, LV_OBJ_FLAG_CLICKABLE);
 
     lv_obj_t * label = lv_label_create(ui_ScreenTestImg);
     lv_obj_set_size(label, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
@@ -75,7 +93,7 @@ void lvgl_ui_task(void * parameter) {
 
     // Add logo gif
     ui_img_main_gif = lv_gif_create(ui_ScreenMainGif);
-    lv_gif_set_src(ui_img_main_gif, gif_idle[0]);
+    gif_theme_set_src(ui_img_main_gif, gif_idle[0]);
     lv_obj_align(ui_img_main_gif, LV_ALIGN_CENTER, 0, 0);
 
     // Add welcome gif
@@ -112,6 +130,12 @@ void lvgl_ui_task(void * parameter) {
     lv_btn_set_extrude(NULL);
 
     for(;;) {
+        // apply pending UI rotation change (requested via web page)
+        display_rotation_loop();
+
+        // re-color main GIF when theme color changed
+        gif_theme_loop();
+
         // lvgl task, must run in loop first.
         lv_timer_handler();
 

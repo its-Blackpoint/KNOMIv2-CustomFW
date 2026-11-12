@@ -519,6 +519,25 @@ text-align: center;">
     </div>
     <div class="card-grid">
       <div class="card">
+        <label class="ant-form-item-row">
+            <span>UI Rotation:&nbsp</span>
+            <span id="flip-state">$flip_state$</span>
+        </label>
+        <input type ="submit" id="submit-btn" value ="Rotate" title="Rotate UI 180&deg;" onclick="toggleFlip()">
+      </div>
+    </div>
+    <script>
+      function toggleFlip() {
+        fetch('/display?flip=toggle')
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            document.getElementById('flip-state').innerHTML = d.flipped ? '180&deg;' : '0&deg;';
+          })
+          .catch(function () { alert('KNOMI not reachable'); });
+      }
+    </script>
+    <div class="card-grid">
+      <div class="card">
         <a href="update"><input type="submit" style="background-color: #C02E2F" id="sys-btn" value ="Update Firmware"></a>
         <span style="width: 10px;"></span>
         <form id="restart-form" name="restart-form" action="/" method="POST">

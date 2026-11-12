@@ -56,6 +56,15 @@ class MOONRAKER {
         void get_printer_info(void);
         void get_progress(void);
         void get_knomi_status(void);
+
+        // progress like Mainsail "file-relative": only bytes between first and
+        // last gcode command count (no thumbnails/header/slicer config)
+        String meta_filename;     // file the byte range below belongs to
+        uint32_t gcode_start_byte;
+        uint32_t gcode_end_byte;
+        bool meta_valid;
+        uint32_t meta_retry_ms;
+        bool get_gcode_metadata(const String &filename);
 };
 
 extern MOONRAKER moonraker;

@@ -84,4 +84,17 @@ void lv_theme_color_style(void) {
     for (uint16_t i = 0; i < ACOUNT(arc_obj); i++) {
         lv_obj_set_style_arc_color(arc_obj[i], lv_theme_color(), LV_PART_INDICATOR | LV_STATE_DEFAULT);
     }
+
+    // value labels (originally yellow 0xFFD164) in theme color
+    lv_obj_t * const text_obj[] = {
+        // ScreenPrinting
+        ui_label_printing_progress,
+        // ScreenHeatingNozzle
+        ui_label_heating_nozzle_actual,
+        // ScreenHeatingBed
+        ui_label_heating_bed_actual,
+    };
+    for (uint16_t i = 0; i < ACOUNT(text_obj); i++) {
+        lv_obj_set_style_text_color(text_obj[i], lv_theme_color(), LV_PART_MAIN | LV_STATE_DEFAULT);
+    }
 }
