@@ -28,7 +28,8 @@ Details for each change: [CHANGES.md](CHANGES.md).
 
 ## Installation (OTA)
 
-1. Download `firmware.bin` from the [Releases](https://github.com/its-Blackpoint/KNOMIv2-CustomFW/releases) page (or build it yourself, see below).
+1. Download [`release/knomi2_BPv1.0.4.bin`](release/knomi2_BPv1.0.4.bin) (or build it yourself, see below).
+   SHA-256: `474feeec75e91b321926a0391f9c94c421e9fee8ce44f0585169dd704cb9a488`
 2. Open `http://knomi.local` (or the KNOMI's IP) in a browser.
 3. Click **Update FW** at the bottom of the page and select the `.bin` file.
 4. KNOMI restarts automatically with the new firmware.
