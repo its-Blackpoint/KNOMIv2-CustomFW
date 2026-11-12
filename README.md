@@ -1,3 +1,19 @@
+# KNOMI V2 – Custom Firmware (BP)
+
+This fork contains a **custom firmware for the BIGTREETECH KNOMI V2** (version **BPv1.0.4**):
+180° UI rotation, animations in the UI theme color, calmer Voron logo, animated Voron logo on the
+printing screen, theme-colored values, no negative target temperatures and print progress
+calculated like Mainsail.
+
+* Source code and documentation: branch [`firmware`](https://github.com/its-Blackpoint/KNOMIv2-CustomFW/tree/firmware)
+  ([README](https://github.com/its-Blackpoint/KNOMIv2-CustomFW/blob/firmware/README.md),
+  [all changes](https://github.com/its-Blackpoint/KNOMIv2-CustomFW/blob/firmware/CHANGES.md))
+* Ready-to-flash OTA binary: [Releases](https://github.com/its-Blackpoint/KNOMIv2-CustomFW/releases)
+
+The original BTT content of this repository (manuals, hardware, GIFs, stock firmware) follows below unchanged.
+
+---
+
 # KNOMI1
 Online manual & customize UI tutorials：[here](https://bigtreetech.github.io/docs/KNOMI.html#)
 
