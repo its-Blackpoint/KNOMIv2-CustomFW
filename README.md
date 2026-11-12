@@ -8,7 +8,7 @@ calculated like Mainsail.
 * Source code and documentation: branch [`firmware`](https://github.com/its-Blackpoint/KNOMIv2-CustomFW/tree/firmware)
   ([README](https://github.com/its-Blackpoint/KNOMIv2-CustomFW/blob/firmware/README.md),
   [all changes](https://github.com/its-Blackpoint/KNOMIv2-CustomFW/blob/firmware/CHANGES.md))
-* Ready-to-flash OTA binary: [Releases](https://github.com/its-Blackpoint/KNOMIv2-CustomFW/releases)
+* Ready-to-flash OTA binary: [`knomi2_BPv1.0.4.bin`](https://github.com/its-Blackpoint/KNOMIv2-CustomFW/raw/firmware/release/knomi2_BPv1.0.4.bin)
 
 The original BTT content of this repository (manuals, hardware, GIFs, stock firmware) follows below unchanged.
 
