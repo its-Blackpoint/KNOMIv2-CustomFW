@@ -10,6 +10,23 @@ Current version: **BPv1.0.4**
 > **KNOMI V2 only.** KNOMI V1 support (build environment, board definition,
 > pinout) was removed from this firmware.
 
+## Screenshots
+
+| Printing screen: stock vs. BPv1.0.4 | Printing screen (animated) | Standby (animated) |
+|:---:|:---:|:---:|
+| ![Printing screen stock vs custom](docs/images/printing_stock_vs_custom.png) | ![Printing screen animation](docs/images/printing_screen.gif) | ![Standby Voron logo](docs/images/standby_voron.gif) |
+
+**Animations follow the UI theme color**
+
+![Theme colors](docs/images/theme_colors.png)
+
+**Heating screens with theme-colored values**
+
+![Heating screens](docs/images/heating_screens.png)
+
+<sub>Images are rendered from this firmware's UI code with LVGL 8.3.7 on a PC (same screens, fonts and
+GIFs as on the device, example theme color purple `#A91DDA`). Colors on the real display may differ slightly.</sub>
+
 ## Features / changes compared to stock BTT firmware
 
 | # | Change | Details |
